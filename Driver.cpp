@@ -15,20 +15,24 @@ using namespace std;
  */
 vector<string> processLine(string line) {
     vector<string> ret;
-    int size = sizeof(line)/sizeof(line[0]);
+    int size = line.length();
     string temp = "";
     for(int i = 0; i < size; i++) {   
         if (line[i] != ' ') {
             string s(1, line[i]);
-            s += temp;
+            temp += s;
+        }
+        else if (line[i] == '\"') {
+            continue;
         }
         else {
             ret.push_back(temp);
             temp = "";
         }
-        return ret;
     }
-        cout << line;
+
+        ret.push_back(temp);
+        return ret;
 }
 
 
@@ -42,12 +46,14 @@ int main() {
     BinarySearchTree BinTree = BinarySearchTree();
 
     //Take File Name as Input, Might need to make this a function for multithreaded usage.
-    cout << "Enter the name/path of the file: ";
-    cin >> fileName;
+    // TODO: uncomment these 2 lines!
+    // cout << "Enter the name/path of the file: ";
+    // cin >> fileName;
+    fileName = "testFile.txt";
     ifstream myFile(fileName);
     if(myFile.is_open()) {
         while(myFile.good()) {
-            myFile >> line;
+            getline(myFile, line);
             instructions = processLine(line);
 
             // Convert instruction line to vars for easier reading
@@ -57,15 +63,17 @@ int main() {
             if (instructions.size() > 2) {
                 value = instructions[2];
             }
+            // If the directive is N (Num. Threads), then create N threads to run the process
             if (directive == "N") {
                 if (key < 1) {
                     cout << "Cannot have 0 or less threads!" << endl;
                 }
                 else {
-                    cout << "Using " << key << " threads." << endl;
+                    numThreads = key;
+                    cout << "Using " << numThreads << " threads." << endl;
                 }
             }
-            // If the directive is an N (Node) or an I (Insert), Insert the key and value given on that line into the BST
+            // If the directive is an I (Insert), Insert the key and value given on that line into the BST
             if (directive == "I" && value != "") {
                 BinTree.insert(key, value);
             }
@@ -78,6 +86,8 @@ int main() {
                 BinTree.search(key);
             }
         }
+        myFile.close();
+        cout << "Done!" << endl;
     }
     
 
@@ -86,4 +96,5 @@ int main() {
     //test.remove(0);
 
     BinTree.print();
+    return 0;
 }

@@ -31,8 +31,8 @@ Node::Node() {
 }
 
 Node::Node(int key, string value){
-    this->value = value;
-    this->key = key;
+    this->value;
+    this->key;
     left = right = NULL;
 }
 
@@ -74,8 +74,9 @@ class BinarySearchTree {
 
 };
 
-//Default Constructor
-//TODO: Fix default constructor from creating a node that is default to pointing root to null
+// Default Constructor
+// TODO: Fix default constructor from creating a node that is default to pointing root to null
+// Can be done with a Node, just make sure the node's key and value are NULL and check that
 BinarySearchTree::BinarySearchTree() {
     root = new Node(0, "Default");
 }
