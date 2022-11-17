@@ -71,7 +71,7 @@ class BinarySearchTree {
 
 //Default Constructor
 BinarySearchTree::BinarySearchTree() {
-    root = new Node(0, "");
+    root = NULL;
 }
 
 //Parametrized Constructor
@@ -85,6 +85,10 @@ BinarySearchTree::~BinarySearchTree() {
 
 //Takes a value, finds and deletes from BST, then rearranges (If nessecary)
 void BinarySearchTree::remove(int key) {
+    if (root == NULL) {
+        cout << "Tree is empty, cannot remove" << endl;
+        return;
+    }
     vector<Node*> traverse = search(key);
     Node* pivot = traverse[traverse.size() - 1];
     Node* parent = traverse[traverse.size() - 2];
@@ -137,6 +141,10 @@ Node* BinarySearchTree::findMin(Node* root) {
 
 //Look for the first pos. open (Traverse tree until hit a null that matches BST def. and then sub out null for the new node)
 void BinarySearchTree::insert(int key, string value) {
+    if (root = NULL) {
+        root = new Node(key, value);
+        return;
+    }
     Node* currNode = root;
     bool search = true;
     //BinarySearchTree me = *this;
@@ -165,6 +173,10 @@ vector<Node*> BinarySearchTree::search(int key) {
     Node* currNode = root;
     bool search = true;
     vector<Node*> nodeTraverse;
+    if (root == NULL) {
+        cout << "Tree is empty" << endl;
+        return nodeTraverse;
+    }
     while (search) {
         nodeTraverse.push_back(currNode);
         if (key < currNode -> key) {
