@@ -5,6 +5,10 @@
 
 using namespace std;
 
+#define OK "OK"
+#define FAIL "Fail"
+
+
 //Node Object, need to make the value field a generic
 class Node {
     public:
@@ -71,6 +75,7 @@ class BinarySearchTree {
 };
 
 //Default Constructor
+//TODO: Fix default constructor from creating a node that is default to pointing root to null
 BinarySearchTree::BinarySearchTree() {
     root = new Node(0, "Default");
 }
@@ -80,15 +85,19 @@ BinarySearchTree::BinarySearchTree(int key, string value) {
     root = new Node(key, value);
 }
 
+// Destructor method
 BinarySearchTree::~BinarySearchTree() {
     delete root;
 }
 
 //Takes a value, finds and deletes from BST, then rearranges (If nessecary)
+//TODO: Update root check from "Default" to NULL
 void BinarySearchTree::remove(int key) {
+    // If we have an empty tree, fail and return
     if (root->value == "Default") {
-        cout << "Tree is empty, cannot remove" << endl;
+        cout << FAIL << endl;
     }
+    // Tree isn't empty! Traverse and grab pivot, parent
     else {
         vector<Node*> traverse = search(key);
         Node* pivot = traverse[traverse.size() - 1];
@@ -97,39 +106,49 @@ void BinarySearchTree::remove(int key) {
 
         //If the value is not in the tree
         if (pivot->getKey() != key) {
-            cout << "Value not in tree" << endl;
+            cout << FAIL << endl;
             return;
         }
-        // No Leaves
-        else if (pivot -> left == NULL && pivot -> right == NULL) {
-            if(pivot -> key < parent -> key) {
-                parent -> left = NULL;
-            }
-            else { parent -> right = NULL; }
-            delete pivot;
-        }
-        // 1 Leaf
-        else if (pivot -> left == NULL && pivot -> right != NULL) {
-            tempHolder = pivot -> right -> key;
-            remove(tempHolder);
-            pivot -> key = tempHolder;
-        }
-        else if (pivot -> right == NULL && pivot -> left != NULL) {
-            tempHolder = pivot -> left -> key;
-            remove(tempHolder);
-            pivot -> key = tempHolder;
-        }
-        // 2 Leaves
+
+        // If the Node is in the tree, handle the removal by case.
         else {
-            Node* temp = findMin(pivot);
-            int smallest = temp -> key;
-            //cout << key;
-            remove(smallest);
-            pivot -> value = smallest;
+            // No Leaves
+            if (pivot -> left == NULL && pivot -> right == NULL) {
+                if(pivot -> key < parent -> key) {
+                    parent -> left = NULL;
+                }
+                else { parent -> right = NULL; }
+                delete pivot;
+            }
+
+            // 1 Leaf (LEFT EMPTY)
+            else if (pivot -> left == NULL && pivot -> right != NULL) {
+                tempHolder = pivot -> right -> key;
+                remove(tempHolder);
+                pivot -> key = tempHolder;
+            }
+
+            // 1 Leaf (RIGHT EMPTY)
+            else if (pivot -> right == NULL && pivot -> left != NULL) {
+                tempHolder = pivot -> left -> key;
+                remove(tempHolder);
+                pivot -> key = tempHolder;
+            }
+
+            // 2 Leaves
+            else {
+                Node* temp = findMin(pivot);
+                int smallest = temp -> key;
+                //cout << key;
+                remove(smallest);
+                pivot -> value = smallest;
+            }
+            cout << OK << endl;
         }
     }
 }
 
+// Finds the minimum value in the BST
 Node* BinarySearchTree::findMin(Node* root) {
     if (root -> left == NULL) {
         return root;
@@ -142,9 +161,12 @@ Node* BinarySearchTree::findMin(Node* root) {
 
 //Look for the first pos. open (Traverse tree until hit a null that matches BST def. and then sub out null for the new node)
 void BinarySearchTree::insert(int key, string value) {
+    // If tree is empty, create a new node at root
     if (root->value == "Default") {
         root = new Node(key, value);
     }
+
+    //Otherwise, traverse the tree to find the appropriate insertion spot
     else {
         Node* currNode = root;
         bool search = true;
@@ -172,43 +194,57 @@ void BinarySearchTree::insert(int key, string value) {
 
 //Traverse BST using def of BST (i.e left is less, right is more, etc.)
 vector<Node*> BinarySearchTree::search(int key) {
+    // Start current node at root, create search boolean and traversal vector
     Node* currNode = root;
     bool search = true;
     vector<Node*> nodeTraverse;
-    if (root == NULL) {
-        cout << "Tree is empty" << endl;
+    // If tree is empty, node will obviously not be in tree, so return
+    if (root->value == "Default") {
+        cout << "No " << key << endl;
         return nodeTraverse;
     }
     while (search) {
         nodeTraverse.push_back(currNode);
+        // If key is less than current nodes key, move left in BST
         if (key < currNode -> key) {
             if (currNode -> left != NULL) {
                 currNode = currNode -> left;
                 continue;
             }
+            // Failure to find key
             else {
                 search = false;
+                cout << "No " << key << endl;
             };
         }
+        // If key is greater than current nodes key, move right in BST
         else if (key > currNode -> key) {
             if (currNode -> right != NULL) {
                 currNode = currNode -> right;
                 continue;
             }
+            // Failure to find key
             else {
                 search = false;
+                cout << "No " << key << endl;
             }
         }
-        else { search = false; } 
+        // Key is found!
+        else {
+            cout << currNode -> value << endl; 
+            search = false;
+        } 
     }  
     return nodeTraverse;
 }
 
+// Print tree in order
 void BinarySearchTree::print() {
     cout << "Printing Tree (In Order!)\n";
     inorder(root);
 }
 
+// Print helper function
 void BinarySearchTree::inorder(Node* traverse) {
     if(traverse == NULL) {
         return;
