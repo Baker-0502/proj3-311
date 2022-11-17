@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -71,7 +72,7 @@ class BinarySearchTree {
 
 //Default Constructor
 BinarySearchTree::BinarySearchTree() {
-    root = NULL;
+    root = new Node(0, "Default");
 }
 
 //Parametrized Constructor
@@ -85,48 +86,48 @@ BinarySearchTree::~BinarySearchTree() {
 
 //Takes a value, finds and deletes from BST, then rearranges (If nessecary)
 void BinarySearchTree::remove(int key) {
-    if (root == NULL) {
+    if (root->value == "Default") {
         cout << "Tree is empty, cannot remove" << endl;
-        return;
     }
-    vector<Node*> traverse = search(key);
-    Node* pivot = traverse[traverse.size() - 1];
-    Node* parent = traverse[traverse.size() - 2];
-    int tempHolder = 0;
-
-    //If the value is not in the tree
-    if (pivot->getKey() != key) {
-        cout << "Value not in tree" << endl;
-        return;
-    }
-    // No Leaves
-    else if (pivot -> left == NULL && pivot -> right == NULL) {
-        if(pivot -> key < parent -> key) {
-            parent -> left = NULL;
-        }
-        else { parent -> right = NULL; }
-        delete pivot;
-    }
-    // 1 Leaf
-    else if (pivot -> left == NULL && pivot -> right != NULL) {
-        tempHolder = pivot -> right -> key;
-        remove(tempHolder);
-        pivot -> key = tempHolder;
-    }
-    else if (pivot -> right == NULL && pivot -> left != NULL) {
-        tempHolder = pivot -> left -> key;
-        remove(tempHolder);
-        pivot -> key = tempHolder;
-    }
-    // 2 Leaves
     else {
-        Node* temp = findMin(pivot);
-        int smallest = temp -> key;
-        //cout << key;
-        remove(smallest);
-        pivot -> value = smallest;
+        vector<Node*> traverse = search(key);
+        Node* pivot = traverse[traverse.size() - 1];
+        Node* parent = traverse[traverse.size() - 2];
+        int tempHolder = 0;
+
+        //If the value is not in the tree
+        if (pivot->getKey() != key) {
+            cout << "Value not in tree" << endl;
+            return;
+        }
+        // No Leaves
+        else if (pivot -> left == NULL && pivot -> right == NULL) {
+            if(pivot -> key < parent -> key) {
+                parent -> left = NULL;
+            }
+            else { parent -> right = NULL; }
+            delete pivot;
+        }
+        // 1 Leaf
+        else if (pivot -> left == NULL && pivot -> right != NULL) {
+            tempHolder = pivot -> right -> key;
+            remove(tempHolder);
+            pivot -> key = tempHolder;
+        }
+        else if (pivot -> right == NULL && pivot -> left != NULL) {
+            tempHolder = pivot -> left -> key;
+            remove(tempHolder);
+            pivot -> key = tempHolder;
+        }
+        // 2 Leaves
+        else {
+            Node* temp = findMin(pivot);
+            int smallest = temp -> key;
+            //cout << key;
+            remove(smallest);
+            pivot -> value = smallest;
+        }
     }
-    
 }
 
 Node* BinarySearchTree::findMin(Node* root) {
@@ -141,31 +142,32 @@ Node* BinarySearchTree::findMin(Node* root) {
 
 //Look for the first pos. open (Traverse tree until hit a null that matches BST def. and then sub out null for the new node)
 void BinarySearchTree::insert(int key, string value) {
-    if (root = NULL) {
+    if (root->value == "Default") {
         root = new Node(key, value);
-        return;
     }
-    Node* currNode = root;
-    bool search = true;
-    //BinarySearchTree me = *this;
-    while (search) {
-        if (key < currNode -> key) {
-            if (currNode -> left != NULL) {
-                currNode = currNode -> left;
-                continue;
+    else {
+        Node* currNode = root;
+        bool search = true;
+        //BinarySearchTree me = *this;
+        while (search) {
+            if (key < currNode -> key) {
+                if (currNode -> left != NULL) {
+                    currNode = currNode -> left;
+                    continue;
+                }
+                currNode -> left = new Node(key, value);
+                search = false;
             }
-            currNode -> left = new Node(key, value);
-            search = false;
-        }
-        if (key > currNode -> key) {
-            if (currNode -> right != NULL) {
-                currNode = currNode -> right;
-                continue;
+            if (key > currNode -> key) {
+                if (currNode -> right != NULL) {
+                    currNode = currNode -> right;
+                    continue;
+                }
+                currNode -> right = new Node(key, value);
+                search = false;
             }
-            currNode -> right = new Node(key, value);
-            search = false;
-        }
-    }  
+        }  
+    }
 }
 
 //Traverse BST using def of BST (i.e left is less, right is more, etc.)
