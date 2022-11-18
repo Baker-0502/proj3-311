@@ -31,8 +31,8 @@ Node::Node() {
 }
 
 Node::Node(int key, string value){
-    this->value;
-    this->key;
+    this->value = value;
+    this->key = key;
     left = right = NULL;
 }
 
@@ -70,6 +70,7 @@ class BinarySearchTree {
         void inorder(Node* traverse);
         Node* findMin(Node* root);
         void print();
+        void lookup(int key);
 
 
 };
@@ -78,7 +79,7 @@ class BinarySearchTree {
 // TODO: Fix default constructor from creating a node that is default to pointing root to null
 // Can be done with a Node, just make sure the node's key and value are NULL and check that
 BinarySearchTree::BinarySearchTree() {
-    root = new Node(0, "Default");
+    root = NULL;
 }
 
 //Parametrized Constructor
@@ -92,10 +93,10 @@ BinarySearchTree::~BinarySearchTree() {
 }
 
 //Takes a value, finds and deletes from BST, then rearranges (If nessecary)
-//TODO: Update root check from "Default" to NULL
+//TODO: Fix deletion algorithm
 void BinarySearchTree::remove(int key) {
     // If we have an empty tree, fail and return
-    if (root->value == "Default") {
+    if (root == NULL) {
         cout << FAIL << endl;
     }
     // Tree isn't empty! Traverse and grab pivot, parent
@@ -144,7 +145,7 @@ void BinarySearchTree::remove(int key) {
                 remove(smallest);
                 pivot -> value = smallest;
             }
-            cout << OK << endl;
+            // cout << "Ok" << endl;
         }
     }
 }
@@ -163,8 +164,9 @@ Node* BinarySearchTree::findMin(Node* root) {
 //Look for the first pos. open (Traverse tree until hit a null that matches BST def. and then sub out null for the new node)
 void BinarySearchTree::insert(int key, string value) {
     // If tree is empty, create a new node at root
-    if (root->value == "Default") {
-        root = new Node(key, value);
+    if (root == NULL) {
+        this->root = new Node(key, value);
+        cout << OK << endl;
     }
 
     //Otherwise, traverse the tree to find the appropriate insertion spot
@@ -178,15 +180,25 @@ void BinarySearchTree::insert(int key, string value) {
                     currNode = currNode -> left;
                     continue;
                 }
-                currNode -> left = new Node(key, value);
-                search = false;
+                else {
+                    currNode -> left = new Node(key, value);
+                    cout << OK << endl;
+                    search = false;
+                }
             }
             if (key > currNode -> key) {
                 if (currNode -> right != NULL) {
                     currNode = currNode -> right;
                     continue;
                 }
-                currNode -> right = new Node(key, value);
+                else {
+                    currNode -> right = new Node(key, value);
+                    cout << OK << endl;
+                    search = false;
+                }
+            }
+            else {
+                cout << FAIL << endl;
                 search = false;
             }
         }  
@@ -200,8 +212,8 @@ vector<Node*> BinarySearchTree::search(int key) {
     bool search = true;
     vector<Node*> nodeTraverse;
     // If tree is empty, node will obviously not be in tree, so return
-    if (root->value == "Default") {
-        cout << "No " << key << endl;
+    if (root == NULL) {
+        // cout << "No " << key << endl;
         return nodeTraverse;
     }
     while (search) {
@@ -215,7 +227,7 @@ vector<Node*> BinarySearchTree::search(int key) {
             // Failure to find key
             else {
                 search = false;
-                cout << "No " << key << endl;
+                // cout << "No " << key << endl;
             };
         }
         // If key is greater than current nodes key, move right in BST
@@ -227,12 +239,12 @@ vector<Node*> BinarySearchTree::search(int key) {
             // Failure to find key
             else {
                 search = false;
-                cout << "No " << key << endl;
+                // cout << "No " << key << endl;
             }
         }
         // Key is found!
         else {
-            cout << currNode -> value << endl; 
+            // cout << currNode -> value << endl; 
             search = false;
         } 
     }  
@@ -251,6 +263,22 @@ void BinarySearchTree::inorder(Node* traverse) {
         return;
     }
     inorder(traverse -> left);
-    cout << "Node Value: " << traverse -> value << " \n";
+    cout << "Node Key: " << traverse->key <<  "\nValue: " << traverse->value << " \n";
     inorder(traverse -> right);
+}
+
+// Lookup Function (Prints to console, so it doesn't break prior search calls)
+void BinarySearchTree::lookup (int key) {
+    vector<Node*> traverse = search(key);
+    Node* pivot = traverse[traverse.size() - 1];
+
+    //If the value is not in the tree
+    if (pivot->getKey() != key) {
+        cout << "No " << key << endl;
+        return;
+    
+    }
+    else {
+        cout << pivot->value << endl;
+    }
 }

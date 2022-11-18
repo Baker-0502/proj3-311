@@ -18,7 +18,7 @@ vector<string> processLine(string line) {
     int size = line.length();
     string temp = "";
     for(int i = 0; i < size; i++) {   
-        if (line[i] != ' ') {
+        if (line[i] != ' ' && line[i] != '\"') {
             string s(1, line[i]);
             temp += s;
         }
@@ -66,35 +66,36 @@ int main() {
             // If the directive is N (Num. Threads), then create N threads to run the process
             if (directive == "N") {
                 if (key < 1) {
-                    cout << "Cannot have 0 or less threads!" << endl;
+                    std::cout << "Cannot have 0 or less threads!" << endl;
                 }
                 else {
                     numThreads = key;
-                    cout << "Using " << numThreads << " threads." << endl;
+                    std::cout << "Using " << numThreads << " threads." << endl;
                 }
             }
             // If the directive is an I (Insert), Insert the key and value given on that line into the BST
-            if (directive == "I" && value != "") {
+            else if (directive == "I") {
                 BinTree.insert(key, value);
             }
             // If the directive is D (Delete), Delete the key given on that line
-            if (directive == "D") {
+            else if (directive == "D") {
                 BinTree.remove(key);
             }
             // If the directive is L (Lookup/Search), Lookup the key given on that line
-            if (directive == "L") {
-                BinTree.search(key);
+            else if (directive == "L") {
+                BinTree.lookup(key);
+            }
+            else {
+                std::cout << "directive not recognized!" << endl;
             }
         }
         myFile.close();
-        cout << "Done!" << endl;
+        std::cout << "Done!" << endl;
     }
     
 
 
-    BinTree.print();
+    // BinTree.print();
     //test.remove(0);
-
-    BinTree.print();
     return 0;
 }

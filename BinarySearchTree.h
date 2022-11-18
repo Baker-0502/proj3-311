@@ -31,6 +31,7 @@
             void inorder(Node* traverse);
             Node* findMin(Node* root);
             void print();
+            void lookup(int key);
     };
 //}
 
