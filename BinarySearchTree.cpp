@@ -93,7 +93,8 @@ BinarySearchTree::~BinarySearchTree() {
 }
 
 //Takes a value, finds and deletes from BST, then rearranges (If nessecary)
-//TODO: Fix deletion algorithm
+//TODO: Fix deletion algorithm, deletes the wrong node or rearranges wrong
+
 void BinarySearchTree::remove(int key) {
     // If we have an empty tree, fail and return
     if (root == NULL) {
@@ -104,7 +105,8 @@ void BinarySearchTree::remove(int key) {
         vector<Node*> traverse = search(key);
         Node* pivot = traverse[traverse.size() - 1];
         Node* parent = traverse[traverse.size() - 2];
-        int tempHolder = 0;
+        int tempKey = -1;
+        string tempValue = "";
 
         //If the value is not in the tree
         if (pivot->getKey() != key) {
@@ -125,16 +127,19 @@ void BinarySearchTree::remove(int key) {
 
             // 1 Leaf (LEFT EMPTY)
             else if (pivot -> left == NULL && pivot -> right != NULL) {
-                tempHolder = pivot -> right -> key;
-                remove(tempHolder);
-                pivot -> key = tempHolder;
+                tempKey = pivot -> right -> key;
+                tempValue = pivot -> right -> value;
+                pivot->setKey(tempKey);
+                pivot->setValue(tempValue);
             }
 
             // 1 Leaf (RIGHT EMPTY)
+            // Need to deep copy the left and right nodes to avoid loss of node after deletion
             else if (pivot -> right == NULL && pivot -> left != NULL) {
-                tempHolder = pivot -> left -> key;
-                remove(tempHolder);
-                pivot -> key = tempHolder;
+                tempKey = pivot -> left -> key;
+                tempValue = pivot -> left -> value;
+                pivot->setKey(tempKey);
+                pivot->setValue(tempValue);
             }
 
             // 2 Leaves
@@ -145,7 +150,7 @@ void BinarySearchTree::remove(int key) {
                 remove(smallest);
                 pivot -> value = smallest;
             }
-            // cout << "Ok" << endl;
+            cout << "Ok" << endl;
         }
     }
 }

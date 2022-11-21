@@ -90,7 +90,6 @@ int main() {
             }
         }
         myFile.close();
-        std::cout << "Done!" << endl;
     }
     
 
