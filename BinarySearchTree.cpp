@@ -82,8 +82,6 @@ public:
 };
 
 // Default Constructor
-// TODO: Fix default constructor from creating a node that is default to pointing root to null
-// Can be done with a Node, just make sure the node's key and value are NULL and check that
 BinarySearchTree::BinarySearchTree()
 {
     root = NULL;
@@ -102,7 +100,6 @@ BinarySearchTree::~BinarySearchTree()
 }
 
 // Takes a value, finds and deletes from BST, then rearranges (If nessecary)
-// TODO: Fix deletion algorithm, deletes the wrong node or rearranges wrong
 
 void BinarySearchTree::remove(int key)
 {
@@ -123,13 +120,10 @@ void BinarySearchTree::remove(int key)
         // If the value is not in the tree
         if (pivot->getKey() != key)
         {
-            cout << FAIL << endl;
+            cout << FAIL << " (Deletion Failure)" << endl;
             return;
         }
-
         // If the Node is in the tree, handle the removal by case.
-        else
-        {
             // No Leaves
             if (pivot->left == NULL && pivot->right == NULL)
             {
@@ -137,43 +131,46 @@ void BinarySearchTree::remove(int key)
                 {
                     parent->left = NULL;
                 }
-                else
+                else if (pivot->key > parent->key)
                 {
                     parent->right = NULL;
+                }
+                else
+                {
+                    root = NULL;
                 }
                 delete pivot;
             }
 
-            // 1 Leaf (LEFT EMPTY)
-            else if (pivot->left == NULL && pivot->right != NULL)
-            {
-                tempKey = pivot->right->key;
-                tempValue = pivot->right->value;
-                pivot->setKey(tempKey);
-                pivot->setValue(tempValue);
-            }
-
-            // 1 Leaf (RIGHT EMPTY)
-            // Need to deep copy the left and right nodes to avoid loss of node after deletion
-            else if (pivot->right == NULL && pivot->left != NULL)
-            {
-                tempKey = pivot->left->key;
-                tempValue = pivot->left->value;
-                pivot->setKey(tempKey);
-                pivot->setValue(tempValue);
-            }
-
-            // 2 Leaves
-            else
-            {
-                Node *temp = findMin(pivot);
-                int smallest = temp->key;
-                // cout << key;
-                remove(smallest);
-                pivot->value = smallest;
-            }
-            cout << "Ok" << endl;
+        // 1 Leaf (LEFT EMPTY)
+        else if (pivot->left == NULL && pivot->right != NULL)
+        {
+            tempKey = pivot->right->key;
+            tempValue = pivot->right->value;
+            pivot->setKey(tempKey);
+            pivot->setValue(tempValue);
         }
+
+        // 1 Leaf (RIGHT EMPTY)
+        // Need to deep copy the left and right nodes to avoid loss of node after deletion
+        else if (pivot->right == NULL && pivot->left != NULL)
+        {
+            tempKey = pivot->left->key;
+            tempValue = pivot->left->value;
+            pivot->setKey(tempKey);
+            pivot->setValue(tempValue);
+        }
+
+        // 2 Leaves
+        else
+        {
+            Node *temp = findMin(pivot);
+            int smallest = temp->key;
+            // cout << key;
+            remove(smallest);
+            pivot->value = smallest;
+        }
+        cout << "Ok (Deletion Success)" << endl;
     }
 }
 
@@ -197,7 +194,7 @@ void BinarySearchTree::insert(int key, string value)
     if (root == NULL)
     {
         this->root = new Node(key, value);
-        cout << OK << endl;
+        cout << OK << " (Insertion Success)" << endl;
     }
 
     // Otherwise, traverse the tree to find the appropriate insertion spot
@@ -218,7 +215,7 @@ void BinarySearchTree::insert(int key, string value)
                 else
                 {
                     currNode->left = new Node(key, value);
-                    cout << OK << endl;
+                    cout << OK << " (Insertion Success)" << endl;
                     search = false;
                 }
             }
@@ -232,13 +229,17 @@ void BinarySearchTree::insert(int key, string value)
                 else
                 {
                     currNode->right = new Node(key, value);
-                    cout << OK << endl;
+                    cout << OK << " (Insertion Success)" << endl;
                     search = false;
                 }
             }
-            else
+            else if (key == currNode->key)
             {
-                cout << FAIL << endl;
+                cout << FAIL << " (Insertion Failure)" << endl;
+                search = false;
+            }
+            else 
+            {
                 search = false;
             }
         }
@@ -329,11 +330,11 @@ void BinarySearchTree::lookup(int key)
     // If the value is not in the tree
     if (pivot->getKey() != key)
     {
-        cout << "No " << key << endl;
+        cout << "No " << key << " (Lookup Failure)" <<  endl;
         return;
     }
     else
     {
-        cout << pivot->value << endl;
+        cout << pivot->value << " (Lookup Success)" <<  endl;
     }
 }
