@@ -1,0 +1,4 @@
+# Ignore Build Folder
+./build
+./CMakeFiles
+./CMakeCache.txt
