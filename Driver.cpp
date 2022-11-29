@@ -80,7 +80,7 @@ void *threadRunner(void *args)
     string value = instructions[2];
     if ((directive == "" || instructions[1] == "") || (instructions[2] == "" && directive != "I"))
     {
-        cout << "Invalid Input, Process Killed" << endl;
+        // cout << "Invalid Input, Process Killed" << endl;
         exit(1);
     }
 
@@ -99,7 +99,7 @@ void *threadRunner(void *args)
     else if (directive == "L")
     {
         // Search for the key
-        tree->lookup(key);
+        tree->lookup( key);
     }
     pthread_mutex_unlock(&condition_mutex);
 }
