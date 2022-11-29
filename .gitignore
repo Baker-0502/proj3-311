@@ -4,3 +4,4 @@
 ./CMakeCache.txt
 ./basicTests1M.txt
 ./basicTests1M_expected.txt
+./*test*
