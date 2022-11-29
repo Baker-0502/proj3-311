@@ -100,7 +100,7 @@ BinarySearchTree::~BinarySearchTree()
 }
 
 // Takes a value, finds and deletes from BST, then rearranges (If nessecary)
-
+// TODO something is causing a seg fault here
 void BinarySearchTree::remove(int key)
 {
     // If we have an empty tree, fail and return
@@ -120,7 +120,7 @@ void BinarySearchTree::remove(int key)
         // If the value is not in the tree
         if (pivot->getKey() != key)
         {
-            cout << FAIL << " (Deletion Failure)" << endl;
+            cout << FAIL << endl;
             return;
         }
         // If the Node is in the tree, handle the removal by case.
@@ -170,7 +170,7 @@ void BinarySearchTree::remove(int key)
             remove(smallest);
             pivot->value = smallest;
         }
-        cout << "Ok (Deletion Success)" << endl;
+        cout << OK << endl;
     }
 }
 
@@ -194,7 +194,7 @@ void BinarySearchTree::insert(int key, string value)
     if (root == NULL)
     {
         this->root = new Node(key, value);
-        cout << OK << " (Insertion Success)" << endl;
+        cout << OK << endl;
     }
 
     // Otherwise, traverse the tree to find the appropriate insertion spot
@@ -215,7 +215,7 @@ void BinarySearchTree::insert(int key, string value)
                 else
                 {
                     currNode->left = new Node(key, value);
-                    cout << OK << " (Insertion Success)" << endl;
+                    cout << OK << endl;
                     search = false;
                 }
             }
@@ -229,13 +229,13 @@ void BinarySearchTree::insert(int key, string value)
                 else
                 {
                     currNode->right = new Node(key, value);
-                    cout << OK << " (Insertion Success)" << endl;
+                    cout << OK << endl;
                     search = false;
                 }
             }
             else if (key == currNode->key)
             {
-                cout << FAIL << " (Insertion Failure)" << endl;
+                cout << FAIL << endl;
                 search = false;
             }
             else 
@@ -330,11 +330,11 @@ void BinarySearchTree::lookup(int key)
     // If the value is not in the tree
     if (pivot->getKey() != key)
     {
-        cout << "No " << key << " (Lookup Failure)" <<  endl;
+        cout << "No " << key <<  endl;
         return;
     }
     else
     {
-        cout << pivot->value << " (Lookup Success)" <<  endl;
+        cout << pivot->value <<  endl;
     }
 }

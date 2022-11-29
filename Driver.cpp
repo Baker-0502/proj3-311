@@ -1,5 +1,5 @@
 #include "BinarySearchTree.h"
-//#include <chrono>
+#include <chrono>
 #include <vector>
 #include <iostream>
 #include <pthread.h>
@@ -69,11 +69,20 @@ void *threadRunner(void *args)
     BinarySearchTree *tree = tArgs->tree;
     string in = *tArgs->in;
 
+    if (in == "") {
+        cout << "Empty String, Process Killed" << endl;
+        exit(1);
+    }
     // Process the input
     vector<string> instructions = processLine(in);
     string directive = instructions[0];
     int key = stoi(instructions[1]);
     string value = instructions[2];
+    if ((directive == "" || instructions[1] == "") || (instructions[2] == "" && directive != "I"))
+    {
+        cout << "Invalid Input, Process Killed" << endl;
+        exit(1);
+    }
 
     pthread_mutex_lock(&condition_mutex);
     // Check the first instruction
@@ -95,9 +104,9 @@ void *threadRunner(void *args)
     pthread_mutex_unlock(&condition_mutex);
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    //auto start = chrono::steady_clock::now();
+    auto start = chrono::steady_clock::now();
     // Init Vars
     string fileName;
     string line;
@@ -110,10 +119,14 @@ int main()
     int key;
     string value;
 
-    //  TODO: uncomment these 2 lines!
-    //  cout << "Enter the name/path of the file: ";
-    //  cin >> fileName;
-    fileName = "testFile.txt";
+    if(argc <= 1) {
+        cout << "No arguments given. Please provide a file name to process." << endl;
+        exit(2);
+    }
+    else {
+        fileName = argv[1];
+    }
+    // fileName = "testFile.txt";
     ifstream myFile(fileName);
 
     if (myFile.is_open() && myFile.good())
@@ -124,7 +137,7 @@ int main()
         if (instructions[0] == "N")
         {
             numThreads = stoi(instructions[1]);
-            cout << "Using " << numThreads << " threads." << endl;
+            cout << "Using " << numThreads << " threads" << endl;
         }
         else
         {
@@ -191,8 +204,8 @@ int main()
 */
     // Close the file
     myFile.close();
-    //auto end = chrono::steady_clock::now();
-    //auto diff = end - start;
-    //cout << chrono::duration <double, milli> (diff).count() << " ms" << endl;
+    auto end = chrono::steady_clock::now();
+    auto diff = end - start;
+    cout << chrono::duration <double, milli> (diff).count() << " ms" << endl;
     return 0;
 }
